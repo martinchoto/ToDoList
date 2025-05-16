@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using ToDoList.Data.Models;
 
 namespace TodoList.Data
 {
@@ -18,5 +18,16 @@ namespace TodoList.Data
 				Database.EnsureCreated();
 			}
 		}
+		public DbSet<Assignment> Assignments { get; set; } = null!;
+		public DbSet<Todo> ToDos { get; set; } = null!;
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+			builder.Entity<Todo>()
+				.HasOne(t => t.Assignment)
+				.WithMany(t => t.ToDoList)
+				.HasForeignKey(t => t.AssignmentId);
+		}
 	}
+
 }
